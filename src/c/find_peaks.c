@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <float.h>
+#include <stdint.h>
 
 #include "find_peaks.h"
 

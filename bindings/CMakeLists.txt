@@ -22,19 +22,17 @@ endif()
 
 # Python Bindings for C++ Library
 # Creates a Python module named find_peaks_cpp_py from the source file
-pybind11_add_module(find_peaks_cpp_py ${CMAKE_CURRENT_SOURCE_DIR}/src/py_bind_cpp.cpp)
+pybind11_add_module(find_peaks_cpp_py ${CMAKE_CURRENT_SOURCE_DIR}/src/py_bind_cpp.cpp
+        ${FIND_PEAKS_SRC_DIR}/cpp/find_peaks.cpp)
 # Adds the src directory to the include path for this module
 target_include_directories(find_peaks_cpp_py PUBLIC ${FIND_PEAKS_SRC_DIR}/cpp)
-# Links the module with the find_peaks_cpp library
-target_link_libraries(find_peaks_cpp_py PUBLIC find_peaks_cpp)
 
 # Python Bindings for C Library
 # Creates a Python module named find_peaks_c_py from the source file
-pybind11_add_module(find_peaks_c_py ${CMAKE_CURRENT_SOURCE_DIR}/src/py_bind_c.cpp)
+pybind11_add_module(find_peaks_c_py ${CMAKE_CURRENT_SOURCE_DIR}/src/py_bind_c.cpp
+        ${FIND_PEAKS_SRC_DIR}/c/find_peaks.c)
 # Adds the src directory to the include path for this module
 target_include_directories(find_peaks_c_py PUBLIC ${FIND_PEAKS_SRC_DIR}/c)
-# Links the module with the find_peaks_c library
-target_link_libraries(find_peaks_c_py PUBLIC find_peaks_c)
 
 # Add Python tests
 if(BUILD_TESTS)
