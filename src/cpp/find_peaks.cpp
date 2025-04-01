@@ -303,13 +303,20 @@ namespace findPeaks {
     std::vector<peak_result_t> find_peaks(const std::vector<double> &x, PeakConditions conditions) {
         std::vector<peak_result_t> results;
 
+        // Find all local maxima in the signal
         std::vector<lmr_peak_index_t> peaks = _local_maxima_1d(x);
+        
+        // Extract peak indices and their heights
         std::vector<size_t> peak_indices = _peak_indices(peaks);
         std::vector<double> heights = _peak_heights(x, peaks);
 
+        // Calculate plateau properties (flat regions at peak tops)
         std::vector<lpr_peak_plateau_t> plateaus = _peak_plateaus(peaks);
+        
+        // Calculate thresholds (difference between peak and adjacent points)
         std::vector<lr_peak_threshold_t> thresholds = _peak_thresholds(x, peak_indices);
 
+        // Initial filtering of peaks based on basic criteria
         std::vector<bool> good_peak_mask(peaks.size(), false);
         for (size_t p = 0; p < peak_indices.size(); p++) {
             peak_result_t r;
@@ -319,29 +326,42 @@ namespace findPeaks {
             r.plateau = plateaus[p];
             r.threshold = thresholds[p];
 
+            // Filter based on height constraints
             if (r.peak_height > conditions.height.upper || r.peak_height < conditions.height.lower)
                 continue;
+                
+            // Filter based on plateau size constraints
             if (r.plateau.plateau_size > conditions.plateau_size.upper ||
                 r.plateau.plateau_size < conditions.plateau_size.lower)
                 continue;
+                
+            // Filter based on threshold constraints (steepness of slopes)
             if (min_double(r.threshold.right_threshold, r.threshold.left_threshold) < conditions.threshold.lower ||
                 max_double(r.threshold.right_threshold, r.threshold.left_threshold) > conditions.threshold.upper)
                 continue;
 
+            // Mark peaks that passed initial filtering
             good_peak_mask[p] = true;
         }
 
+        // Apply the mask to keep only good peaks
         peaks = apply_mask(peaks, good_peak_mask);
         peak_indices = _peak_indices(peaks);
         heights = apply_mask(heights, good_peak_mask);
         plateaus = apply_mask(plateaus, good_peak_mask);
         thresholds = apply_mask(thresholds, good_peak_mask);
 
+        // Filter peaks based on minimum distance between peaks
+        // This keeps only the highest peak within the specified distance
         std::vector<bool> distance_mask = _select_by_peak_distance(peak_indices, heights, conditions.distance);
 
+        // Calculate peak prominences (vertical distance to lowest contour line)
         std::vector<lpr_peak_prominence_t> prominences = _peak_prominences(x, peak_indices, conditions.wlen);
+        
+        // Calculate peak widths at specified relative height
         std::vector<whlr_peak_width_t> widths = _peak_widths(x, peak_indices, conditions.rel_height, prominences);
 
+        // Final peak selection based on all criteria
         for (size_t p = 0; p < peak_indices.size(); p++) {
             peak_result_t r;
             r.peak = peak_indices[p];
@@ -352,14 +372,20 @@ namespace findPeaks {
             r.prominence = prominences[p];
             r.width = widths[p];
 
+            // Skip peaks that don't satisfy distance criteria
             if (!distance_mask[p])
                 continue;
+                
+            // Filter based on prominence constraints
             if (r.prominence.prominence > conditions.prominence.upper ||
                 r.prominence.prominence < conditions.prominence.lower)
                 continue;
+                
+            // Filter based on width constraints
             if (r.width.width > conditions.width.upper || r.width.width < conditions.width.lower)
                 continue;
 
+            // Add peaks that passed all filters to results
             results.push_back(r);
         }
 
