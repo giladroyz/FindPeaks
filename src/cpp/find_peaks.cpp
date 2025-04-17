@@ -9,7 +9,6 @@
 #include <vector>
 #include <numeric>
 #include <algorithm>
-#include <iostream>
 
 #include "find_peaks.hpp"
 
@@ -133,8 +132,6 @@ namespace findPeaks {
 
         size_t peak, i_min, i_max;
         size_t half_wlen = wlen / 2;
-
-//    std::cout << "wlen: " << wlen << ", " << half_wlen << std::endl;
 
         for (size_t peak_nr = 0; peak_nr < peaks.size(); peak_nr++) {
             lpr_peak_prominence_t prominence;

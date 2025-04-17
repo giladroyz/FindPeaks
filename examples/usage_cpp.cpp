@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <random>
 
 #include "find_peaks.hpp"
 
