@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <limits>
+#include <vector>
 
 /**
  * @file find_peaks.hpp
