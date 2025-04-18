@@ -399,16 +399,6 @@ namespace findPeaks {
         void set_plateau_size(Args &&... args) { this->plateau_size = RangeInt(std::forward<Args>(args)...); }
     };
 
-    //    void set_height(const RangeFloat& height) { this->height = height; }
-    //    void set_threshold(const RangeFloat& threshold) { this->threshold = threshold; }
-    //    void set_distance(size_t distance) { this->distance = distance; }
-    //    void set_prominence(const RangeFloat& prominence) { this->prominence = prominence; }
-    //    void set_width(const RangeFloat& width) { this->width = width; }
-    //    void set_wlen(size_t wlen) { this->wlen = wlen; }
-    //    void set_rel_height(double rel_height) { this->rel_height = rel_height; }
-    //    void set_plateau_size(const RangeInt& plateau_size) { this->plateau_size = plateau_size; }
-    //};
-
     /**
      * @brief Finds and analyzes peaks in a numerical signal
      *
@@ -425,7 +415,7 @@ namespace findPeaks {
      * The function performs sophisticated peak detection with the following key features:
      * - Flexible peak detection criteria through PeakConditions
      * - Comprehensive peak property analysis
-     * - Efficient O(n) complexity algorithm
+     * - Efficient O(nlog(n)) time complexity algorithm
      *
      * Detection Criteria:
      * - Height range
@@ -439,7 +429,7 @@ namespace findPeaks {
      * - Returns an empty vector if no peaks meet the specified conditions
      * - Peaks are returned in order of appearance in the input signal
      *
-     * @complexity O(n), where n is the length of the input signal
+     * @complexity O(nlog(n)), where n is the length of the input signal
      *
      * @throws No explicit exceptions, but may have undefined behavior
      *         with extremely large or malformed input signals
