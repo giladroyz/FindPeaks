@@ -1,3 +1,5 @@
+![GitHub Actions Workflow Status](https://github.com/giladroyz/FindPeaks/actions/workflows/cmake-multi-platform.yml/badge.svg)
+
 # Find Peaks Library
 
 C/C++ library for peak detection and analysis in signal data.
