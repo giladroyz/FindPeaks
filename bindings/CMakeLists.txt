@@ -5,6 +5,7 @@
 
 # Let pybind11 find the python interpreter for our pytest
 set(PYBIND11_FINDPYTHON ON)
+set(Python_FIND_STRATEGY LOCATION)
 
 include(FetchContent)
 FetchContent_Declare(
