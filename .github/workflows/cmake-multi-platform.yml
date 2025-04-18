@@ -30,12 +30,21 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+          - os: windows-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            compiler_package: mingw
+          - os: windows-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+
           - os: macos-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -45,6 +54,7 @@ jobs:
         exclude:
           - os: windows-latest
             c_compiler: gcc
+            compiler_package: ""
           - os: windows-latest
             c_compiler: clang
           - os: ubuntu-latest
@@ -61,6 +71,23 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Install MinGW
+      if: ${{ matrix.os == 'windows-latest' && matrix.compiler_package == 'mingw' }}
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: >-
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-make
+
+    - name: Install Clang for Windows
+      if: ${{ matrix.os == 'windows-latest' && matrix.c_compiler == 'clang' }}
+      run: |
+        choco install llvm -y
+        echo "C:\Program Files\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
