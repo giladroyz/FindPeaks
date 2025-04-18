@@ -26,10 +26,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
+        compiler_package: ["", "mingw"]  # Added this line to define the key
         include:
+          # Windows configurations
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+            compiler_package: ""
           - os: windows-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -37,30 +40,47 @@ jobs:
           - os: windows-latest
             c_compiler: clang
             cpp_compiler: clang++
-
+            compiler_package: ""
+            
+          # Ubuntu configurations
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            compiler_package: ""
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
-
+            compiler_package: ""
+            
+          # macOS configurations
           - os: macos-latest
             c_compiler: gcc
             cpp_compiler: g++
+            compiler_package: ""
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
+            compiler_package: ""
         exclude:
+          - os: ubuntu-latest
+            c_compiler: cl
+          - os: macos-latest
+            c_compiler: cl
           - os: windows-latest
             c_compiler: gcc
             compiler_package: ""
+
+          # Exclude extra combinations to avoid duplication
+          - os: ubuntu-latest
+            compiler_package: mingw
+          - os: macos-latest
+            compiler_package: mingw
+          - os: windows-latest
+            c_compiler: cl
+            compiler_package: mingw
           - os: windows-latest
             c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
-          - os: macos-latest
-            c_compiler: cl
+            compiler_package: mingw
 
     steps:
     - uses: actions/checkout@v4
