@@ -87,7 +87,7 @@ jobs:
     - name: Install Python dependencies
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Installing requirements for the python tests
-      run: ${{ steps.get-python-path.outputs.python_executable }} -m pip install pytest scipy numpy
+      run: ${{ steps.get-python-path.outputs.python_executable }} -m pip install pytest scipy numpy --break-system-packages
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
