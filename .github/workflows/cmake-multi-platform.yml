@@ -4,7 +4,7 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main" , "add_ci" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -71,6 +71,7 @@ jobs:
     - name: Get CMake Python path
       id: get-python-path
       shell: cmake -P {0}
+      # Find the python version used by cmake and save it for use in the "Install Python dependencies" step
       run: |
         find_package(Python REQUIRED)
         file(APPEND "$ENV{GITHUB_OUTPUT}" "python_executable=${Python_EXECUTABLE}")
