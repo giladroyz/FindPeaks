@@ -23,26 +23,64 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
+        compiler_package: ["", "mingw"]  # Added this line to define the key
         include:
+          # Windows configurations
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+            compiler_package: ""
+          - os: windows-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            compiler_package: mingw
+          - os: windows-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+            compiler_package: ""
+            
+          # Ubuntu configurations
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            compiler_package: ""
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
-        exclude:
-          - os: windows-latest
+            compiler_package: ""
+            
+          # macOS configurations
+          - os: macos-latest
             c_compiler: gcc
-          - os: windows-latest
+            cpp_compiler: g++
+            compiler_package: ""
+          - os: macos-latest
             c_compiler: clang
+            cpp_compiler: clang++
+            compiler_package: ""
+        exclude:
           - os: ubuntu-latest
             c_compiler: cl
+          - os: macos-latest
+            c_compiler: cl
+          - os: windows-latest
+            c_compiler: gcc
+            compiler_package: ""
+
+          # Exclude extra combinations to avoid duplication
+          - os: ubuntu-latest
+            compiler_package: mingw
+          - os: macos-latest
+            compiler_package: mingw
+          - os: windows-latest
+            c_compiler: cl
+            compiler_package: mingw
+          - os: windows-latest
+            c_compiler: clang
+            compiler_package: mingw
 
     steps:
     - uses: actions/checkout@v4
@@ -53,6 +91,23 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Install MinGW for Windows
+      if: ${{ matrix.os == 'windows-latest' && matrix.compiler_package == 'mingw' }}
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: >-
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-make
+
+    - name: Install Clang for Windows
+      if: ${{ matrix.os == 'windows-latest' && matrix.c_compiler == 'clang' }}
+      run: |
+        choco install llvm -y
+        echo "C:\Program Files\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -79,7 +134,7 @@ jobs:
     - name: Install Python dependencies
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Installing requirements for the python tests
-      run: ${{ steps.get-python-path.outputs.python_executable }} -m pip install pytest scipy numpy
+      run: ${{ steps.get-python-path.outputs.python_executable }} -m pip install pytest scipy numpy --break-system-packages
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
