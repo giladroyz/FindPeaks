@@ -71,7 +71,7 @@ jobs:
     - name: Install Python dependencies
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Installing requirements for the python tests
-      run: python -m pip install pytest scipy numpy
+      run: python3.13 -m pip install pytest scipy numpy
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
