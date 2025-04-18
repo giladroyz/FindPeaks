@@ -4,7 +4,7 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main", "add_macos_to_workflow" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -92,7 +92,7 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Install MinGW
+    - name: Install MinGW for Windows
       if: ${{ matrix.os == 'windows-latest' && matrix.compiler_package == 'mingw' }}
       uses: msys2/setup-msys2@v2
       with:
