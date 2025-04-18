@@ -5,8 +5,6 @@
 
 # Let pybind11 find the python interpreter for our pytest
 set(PYBIND11_FINDPYTHON ON)
-#set(Python_FIND_STRATEGY LOCATION)
-set(Python_FIND_UNVERSIONED_NAMES FIRST)
 
 include(FetchContent)
 FetchContent_Declare(

@@ -68,10 +68,17 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
+    - name: Get CMake Python path
+      id: get-python-path
+      shell: cmake -P {0}
+      run: |
+        find_package(Python REQUIRED)
+        file(APPEND "$ENV{GITHUB_OUTPUT}" "python_executable=${Python_EXECUTABLE}")
+
     - name: Install Python dependencies
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Installing requirements for the python tests
-      run: python3.13 -m pip install pytest scipy numpy
+      run: ${{ steps.get-python-path.outputs.python_executable }} -m pip install pytest scipy numpy
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
