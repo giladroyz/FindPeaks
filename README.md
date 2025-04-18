@@ -1,3 +1,5 @@
+![GitHub Actions Workflow Status](https://github.com/username/repository/actions/workflows/main.yml/badge.svg)
+
 # Find Peaks Library
 
 C/C++ library for peak detection and analysis in signal data.
