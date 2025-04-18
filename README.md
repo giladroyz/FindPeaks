@@ -1,4 +1,4 @@
-![GitHub Actions Workflow Status](https://github.com/username/repository/actions/workflows/main.yml/badge.svg)
+![GitHub Actions Workflow Status](https://github.com/giladroyz/FindPeaks/actions/workflows/cmake-multi-platform.yml/badge.svg)
 
 # Find Peaks Library
 
